@@ -1,0 +1,16 @@
+// A do-while loop taken from collina whose acyclic regions were not correctly identified,
+// until region_identifier was modified
+
+digraph G {
+    21091 [pos="0,5!"];
+    2818 -> 22693;
+    6723 -> 19522;
+    6723 -> 25731;
+    12451 -> 2818;
+    12451 -> 22693;
+    21091 -> 12451;
+    22658 -> 6723;
+    22693 -> 6723;
+    22693 -> 22658;
+    25731 -> 21091;
+}

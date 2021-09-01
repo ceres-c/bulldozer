@@ -1,0 +1,4 @@
+This folder contains some dot graphs (to be compiled
+with graphviz) of interesting parts of collina.
+collina_do_while_loop.dot was an example of a broken
+loop

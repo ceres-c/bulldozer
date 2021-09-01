@@ -1,0 +1,16 @@
+// A while loop breaking region identifier, unless graph_with_successors was analyzed
+
+digraph G {
+
+    8192 [pos="5,0!"];
+
+    2048 -> 3072;
+    2048 -> 8192;
+    3072 -> 7168;
+    6144 -> 9216;
+    7168 -> 6144;
+    7168 -> 10240;
+    9216 -> 10240;
+    10240 -> 102212;
+
+}

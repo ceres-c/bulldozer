@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "commander": "^8.0.0",
+    "jsnetworkx": "^0.3.4",
+    "shift-ast": "^6.1.0",
+    "shift-codegen": "^7.0.3",
+    "shift-parser": "^7.0.3",
+    "shift-refactor": "^2.0.0",
+    "unminify": "^1.1.0"
+  }
+}
