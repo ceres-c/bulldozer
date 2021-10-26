@@ -79,16 +79,17 @@ result = obfuscate("hello")
 print("Your obfuscated result is: " + str(result))
 print(deobfuscate(result))
 
-# Removes stack-based string obfuscation from collina. Note it's checkinf for "En" in the w.push scenario
+# # Removes stack-based string obfuscation from collina. Note it's checking for "En"
 
 # most_recent_params = []
 # new_line = ""
-# with open("workdir/collinas/collina_orig_unflattened_reversing.js", "r") as file:
+# with open("../collinas/collina_orig_unflattened_reversing.js", "r") as file:
 # 	for line in file.readlines():
 # 		if "e(14, 2, -1);" in line:
 # 			spaces = line[:line.find("e(14, 2, -1);")]
 # 			new_line = ''.join([spaces, "// ", "e(14, 2, -1);"])
 # 		elif "w.push" in line and "En" in line:
+# 			# Ignore this, since it's the only useful push: the one inside the string decoding function
 # 			new_line = line.rstrip()
 # 		elif "w.push" in line:
 # 			start = line.find("(")
