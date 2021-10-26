@@ -1,5 +1,5 @@
 # Bulldozer
-A JavaScript deobfuscator/decompiler built for `collina.js` from AliExpress.
+A deobfuscator/decompiler written in JavaScript for JavaScript "binaries", currently targeted at `collina.js` from AliExpress.
 
 Reconstructing a flattened CFG, recovering control structures and deobfuscating literals via partial evaluation. In JavaScript.
 
@@ -9,7 +9,7 @@ Install dependencies and you're ready to go
 npm install
 ./bulldozer.js -s collinas/collina_orig.js
 ```
-The process will take some time (especially cyclic regions identification), and the result file will appear alongside the input with `_unflattened` appended.
+The process will take some time (especially cyclic regions identification), and the result file will appear alongside the input with `_unflattened` appended. The resulting file can be used as a drop-in replacement for the original `collina.js` with chrome overrides.
 
 ### Debug mode
 Passing the parameter `-d` debug mode is enabled. Beware, it is REALLY chatty

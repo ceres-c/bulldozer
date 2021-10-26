@@ -160,7 +160,7 @@ function _edges(statements) {
 		case 'ConditionalExpression':
 			// Generate two appropriate conditional edges and start searching in both directions
 
-			let expression_data = find_test_expression(statements)
+			let expression_data = find_test_expression(statements) // TODO FIXME this is buggy: it does not take successive writes in consideration
 
 			if (expression_data.test === null) {
 				// The test expression actually had only one branch (e.g. test condition was a LiteralBoolean).
@@ -285,6 +285,11 @@ function find_test_expression(statements) {
 	//	`Ma = Se.length < 5;
 	//	 li = Ma ? 4632 : 13364;`
 	// This function will return the AST expression of `Se.length < 5`
+	// WARNING THIS IS BUGGY!
+	// Example code below would result in "co === Jo" being put in the if clause, but it'd be wrong since Jo is overwritten in the meantime
+	// uo = co === Jo;
+	// Jo = "string"
+	// if (!uo) { console.log("This is wrong!"); }
 	function find_indirect(identifier_expr) {
 		// Accepting an expression as input instaed of a identifier name to always return an expression,
 		// even if we were not able to find where the identifier is assigned
@@ -316,29 +321,36 @@ function find_test_expression(statements) {
 			// D = ye.length > 7;
 			// next_state = D ? 9925 : 7366;
 			// It's necessary to look for "D" identifier assignment (it *should* be in the same basic block)
-			let indirect_test = find_indirect(next_state_assign.test);
+			// let indirect_test = find_indirect(next_state_assign.test); // TODO decomment this once find_indirect is fixed
 			return {
-				test: indirect_test, // Fallback to the identifier
+				// test: indirect_test, // Fallback to the identifier // TODO decomment this once find_indirect is fixed
+				test: next_state_assign.test, // TODO remove this once find_indirect is fixed
 				consequent: next_state_assign.consequent.value,
 				alternate: next_state_assign.alternate.value
 			};
 			break;
 		case 'UnaryExpression':
-			if (next_state_assign.test.operand.type == 'IdentifierExpression') {
-				// Indirect check with unary over a variable. e.g. ~ge ? 6789 : 15684;
-				let indirect_test = find_indirect(next_state_assign.test.operand);
-				return {
-					test: indirect_test, // Fallback to the identifier
-					consequent: next_state_assign.consequent.value,
-					alternate: next_state_assign.alternate.value
-				};
-			} else {
-				return {
-					test: next_state_assign.test, // Fallback to the identifier
-					consequent: next_state_assign.consequent.value,
-					alternate: next_state_assign.alternate.value
-				};
-			}
+			// TODO decomment this once find_indirect is fixed
+			// if (next_state_assign.test.operand.type == 'IdentifierExpression') {
+			// 	// Indirect check with unary over a variable. e.g. ~ge ? 6789 : 15684;
+			// 	let indirect_test = find_indirect(next_state_assign.test.operand);
+			// 	return {
+			// 		test: indirect_test, // Fallback to the identifier
+			// 		consequent: next_state_assign.consequent.value,
+			// 		alternate: next_state_assign.alternate.value
+			// 	};
+			// } else {
+			// 	return {
+			// 		test: next_state_assign.test, // Fallback to the identifier
+			// 		consequent: next_state_assign.consequent.value,
+			// 		alternate: next_state_assign.alternate.value
+			// 	};
+			// }
+			return {
+				test: next_state_assign.test, // Fallback to the identifier
+				consequent: next_state_assign.consequent.value,
+				alternate: next_state_assign.alternate.value
+			};
 			break;
 		case 'LiteralBooleanExpression':
 			// li = true ? 12288 : 1024;
