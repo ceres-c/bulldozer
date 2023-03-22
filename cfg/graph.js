@@ -352,6 +352,52 @@ function find_test_expression(statements) {
 				alternate: next_state_assign.alternate.value
 			};
 			break;
+		case 'AssignmentExpression':
+			// TODO decomment this once find_indirect is fixed
+			// if (next_state_assign.test.operand.type == 'IdentifierExpression') {
+			// 	// Indirect check with unary over a variable. e.g. ~ge ? 6789 : 15684;
+			// 	let indirect_test = find_indirect(next_state_assign.test.operand);
+			// 	return {
+			// 		test: indirect_test, // Fallback to the identifier
+			// 		consequent: next_state_assign.consequent.value,
+			// 		alternate: next_state_assign.alternate.value
+			// 	};
+			// } else {
+			// 	return {
+			// 		test: next_state_assign.test, // Fallback to the identifier
+			// 		consequent: next_state_assign.consequent.value,
+			// 		alternate: next_state_assign.alternate.value
+			// 	};
+			// }
+			return {
+				test: next_state_assign.test, // Fallback to the identifier
+				consequent: next_state_assign.consequent.value,
+				alternate: next_state_assign.alternate.value
+			};
+			break;
+		case 'CompoundAssignmentExpression':
+			// TODO decomment this once find_indirect is fixed
+			// if (next_state_assign.test.operand.type == 'IdentifierExpression') {
+			// 	// Indirect check with unary over a variable. e.g. ~ge ? 6789 : 15684;
+			// 	let indirect_test = find_indirect(next_state_assign.test.operand);
+			// 	return {
+			// 		test: indirect_test, // Fallback to the identifier
+			// 		consequent: next_state_assign.consequent.value,
+			// 		alternate: next_state_assign.alternate.value
+			// 	};
+			// } else {
+			// 	return {
+			// 		test: next_state_assign.test, // Fallback to the identifier
+			// 		consequent: next_state_assign.consequent.value,
+			// 		alternate: next_state_assign.alternate.value
+			// 	};
+			// }
+			return {
+				test: next_state_assign.test, // Fallback to the identifier
+				consequent: next_state_assign.consequent.value,
+				alternate: next_state_assign.alternate.value
+			};
+			break;
 		case 'LiteralBooleanExpression':
 			// li = true ? 12288 : 1024;
 			// Switch on the boolean and add only the edge which can be followed.

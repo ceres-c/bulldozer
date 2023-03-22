@@ -18,126 +18,29 @@ edge_type = Object.freeze({
 
 // Recursive depth-first search for "backwards" edges.
 // Returns a generator of ordered pairs of two nodes [source, target] for any found backwards edge
-// function* dfs_back_edges(graph, start_node) {
-// 	let visited = new Set();
-// 	let finished = new Set();
-//
-// 	function* _dfs_back_edges_core(node) {
-// 		visited.add(node);
-// 		for (let [child_state, _] of graph.get(node)) { // Discard edge properties
-// 			if (!finished.has(child_state)) {
-// 				if (visited.has(child_state)) {
-// 					yield [node, child_state];
-// 				} else {
-// 					for (let e of _dfs_back_edges_core(child_state)) {
-// 						yield e;
-// 					}
-// 				}
-// 			}
-// 		}
-// 		finished.add(node)
-// 	}
-//
-// 	for (let e of _dfs_back_edges_core(start_node)) {
-// 		yield e;
-// 	}
-// }
+function* dfs_back_edges(graph, start_node) {
+	let visited = new Set();
+	let finished = new Set();
 
-// fix:Based on the dominator tree in the control-flow graph,
-// we can automatically identify natural loops by looking for back edges:
-// If we find an edge from a node back to one of its dominators, we identified a loop.
-// We say that the dominator controls the loop since it dominates all blocks in it.
-function compute_dominators(cfg, head) {
-    function* reachableNodes(cfg, head) {
-        const todo = new Set([head]);
-        const reachable = new Set();
-        while (todo.size > 0) {
-            const node = todo.values().next().value;
-            todo.delete(node);
-            if (reachable.has(node)) continue;
-            reachable.add(node);
-            yield node;
-            for (const nextNode of cfg.successorsIter(node)) {
-                todo.add(nextNode);
-            }
-        }
-    }
+	function* _dfs_back_edges_core(node) {
+		visited.add(node);
+		for (let [child_state, _] of graph.get(node)) { // Discard edge properties
+			if (!finished.has(child_state)) {
+				if (visited.has(child_state)) {
+					yield [node, child_state];
+				} else {
+					for (let e of _dfs_back_edges_core(child_state)) {
+						yield e;
+					}
+				}
+			}
+		}
+		finished.add(node)
+	}
 
-    function isSubset(set1, set2) {
-        for (const x of set1) {
-            if (!set2.has(x)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    const nodes = new Set(reachableNodes(cfg, head));
-    const dominators = {};
-    for (const node of nodes) {
-        dominators[node] = new Set(nodes);
-    }
-    dominators[head] = new Set([head]);
-    const todo = new Set(nodes);
-    while (todo.size > 0) {
-        const node = todo.values().next().value;
-        todo.delete(node);
-        if (node === head) continue;
-        let newDom = null;
-        for (const pred of cfg.predecessorsIter(node)) {
-            if (!nodes.has(pred)) continue;
-            if (newDom === null) {
-                newDom = new Set(dominators[pred]);
-            } else {
-                newDom = new Set([...newDom].filter(x => dominators[pred].has(x)));
-            }
-        }
-        if (newDom === null) {
-            throw new Error(`No dominator found for node ${node}`);
-        }
-        newDom.add(node);
-        if (dominators[node].size !== newDom.size || !isSubset(newDom, dominators[node])) {
-            dominators[node] = newDom;
-            for (const succ of cfg.successorsIter(node)) {
-                todo.add(succ);
-            }
-        }
-    }
-    return dominators;
-}
-
-function* dfs_back_edges(cfg, start_node) {
-
-    let dominators = compute_dominators(cfg, start_node)
-
-    function* _walk_generic_first(cfg, head) {
-        const todo = [head];
-        const done = new Set();
-
-        while (todo.length > 0) {
-            const node = todo.splice(-1, 1)[0];
-            if (done.has(node)) {
-                continue;
-            }
-            done.add(node);
-
-            for (const succ of cfg.successorsIter(node)) {
-                todo.push(succ);
-            }
-
-            yield node;
-        }
-    }
-
-    for (let node of _walk_generic_first(cfg, start_node)) {
-        for (let successor of cfg.successorsIter(node)) {
-            if (dominators[node].has(successor)) {
-                let edge = [node, successor]
-                yield edge
-            }
-        }
-    }
-
+	for (let e of _dfs_back_edges_core(start_node)) {
+		yield e;
+	}
 }
 
 

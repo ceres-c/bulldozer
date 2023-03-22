@@ -52,7 +52,7 @@ class StateMachineParser {
 		let case_body, statements;
 
 		let i = 0;
-		let switch_val = eval_result[i];
+		let switch_val = 31 & state;
 		let switch_identifier = this.bitwise_identifiers[i];
 		while (map instanceof Map) {
 			map = map.get(switch_val);
